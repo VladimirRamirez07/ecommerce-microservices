@@ -1,6 +1,0 @@
-# App
-PORT=3002
-NODE_ENV=development
-
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/catalog_db
