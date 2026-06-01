@@ -54,31 +54,24 @@ This project is a **fully distributed e-commerce platform** divided into indepen
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          API Consumers                               │
-│                    (Web / Mobile / External)                         │
-└───────┬─────────┬──────────────┬────────────┬────────────────────────┘
-        │         │              │            │            │
-        ▼         ▼              ▼            ▼            ▼
-┌───────────┐ ┌─────────┐ ┌──────────┐ ┌─────────┐ ┌──────────┐
-│  Users    │ │ Catalog │ │Inventory │ │ Orders  │ │Payments  │
-│ Service   │ │ Service │ │ Service  │ │ Service │ │ Service  │
-│  :3001    │ │  :3002  │ │  :3003   │ │  :3004  │ │  :3005   │
-│           │ │         │ │          │ │         │ │          │
-│ Swagger ✓ │ │Swagger ✓│ │Swagger ✓ │ │Swagger ✓│ │Swagger ✓ │
-└─────┬─────┘ └────┬────┘ └────┬─────┘ └────┬────┘ └─────┬────┘
-      │             │           │             │             │
-      ▼             ▼           ▼             └──────┬──────┘
-┌──────────┐  ┌──────────┐ ┌──────────┐             │
-│PostgreSQL│  │ MongoDB  │ │PostgreSQL│      ┌───────▼──────┐
-│ users_db │  │catalog_db│ │inventory │      │  Apache      │
-└──────────┘  └──────────┘ │   _db    │      │  Kafka       │
-                            └──────────┘      │              │
-                                              │  Topics:     │
-                                              │  order.*     │
-                                              │  payment.*   │
-                                              └──────────────┘
+```mermaid
+graph TD
+    Client["🌐 API Consumers<br/>(Web / Mobile / External)"]
+
+    Client --> US["👤 Users Service<br/>:3001 | Swagger ✓"]
+    Client --> CS["📦 Catalog Service<br/>:3002 | Swagger ✓"]
+    Client --> IS["📊 Inventory Service<br/>:3003 | Swagger ✓"]
+    Client --> OS["🛍️ Orders Service<br/>:3004 | Swagger ✓"]
+    Client --> PS["💳 Payments Service<br/>:3005 | Swagger ✓"]
+
+    US --> PG1[("🐘 PostgreSQL<br/>users_db")]
+    CS --> MG[("🍃 MongoDB<br/>catalog_db")]
+    IS --> PG2[("🐘 PostgreSQL<br/>inventory_db")]
+    OS --> PG3[("🐘 PostgreSQL<br/>orders_db")]
+    PS --> PG4[("🐘 PostgreSQL<br/>payments_db")]
+
+    OS -->|order.created<br/>order.cancelled<br/>order.status.updated| KF["⚡ Apache Kafka"]
+    PS -->|payment.completed<br/>payment.failed<br/>payment.refunded| KF
 ```
 
 ### Communication Patterns
