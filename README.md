@@ -95,7 +95,7 @@ Handles user registration, authentication, and profile management.
 - Soft delete for user deactivation
 
 ### 📦 Catalog Service — Port `3002`
-Manages the product catalog and categories using MongoDB for flexible schema
+Manages the product catalog and categories using MongoDB for flexible schema.
 
 - Product CRUD with full attribute support
 - Category management
